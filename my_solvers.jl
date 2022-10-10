@@ -26,7 +26,8 @@ function computeLU(A)
 
     N = size(A)[1]
 
-    Id = Matrix{Float64}(I, N, N) # N x N identity matrix
+    #Id = Matrix{Float64}(I, N, N) # N x N identity matrix
+    Id = create_identity(N)
 
     L = copy(Id)   # initialize
     U = copy(Id)   # initialize
@@ -58,18 +59,31 @@ function compute_Lk(A, k)
     
     N = size(A)[1]
 
-    Lk = Matrix{Float64}(I, N, N)       # initialize as identity matrix
-    Lk_inv = Matrix{Float64}(I, N, N)   # initialize as identity matrix
+    Lk = create_identity(N) # Matrix{Float64}(I, N, N)       # initialize as identity matrix
+    Lk_inv = create_identity(N)# Matrix{Float64}(I, N, N)   # initialize as identity matrix
 
     # now modify column k, strictly below diagonal (i = k+1:N)
     for i = k+1:N
-        Lk[i,k] = ???       # fill me in (compute elimination factors)
-        Lk_inv[i,k] = ???   # fill me in (compute elimination factors)
+        Lk[i,k] = -A[i,k] / A[k,k]    # fill me in (compute elimination factors)
+        Lk_inv[i,k] = A[i,k] / A[k,k]  # fill me in (compute elimination factors)
     end
  
     return (Lk, Lk_inv)
 
 end
+
+function create_identity(N)
+
+    I = Matrix{Float64}(undef, N, N)
+    I .= 0
+
+    for i = 1:N
+        I[i, i] = 1
+    end
+
+    return I
+end
+
 
 A = Matrix{Float64}(undef, 3, 3)
 A .= [6 -2 2;12 -8 6;3 -13 3]
